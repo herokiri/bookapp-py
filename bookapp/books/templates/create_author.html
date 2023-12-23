@@ -1,0 +1,13 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h2>Создание автора</h2>
+    <form method="post" action="{% url 'create_author' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Создать</button>
+    </form>
+</div>
+{% endblock %}

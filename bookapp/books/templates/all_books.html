@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h2>Все книги</h2>
+
+
+ <form method="get" action="{% url 'all_books' %}" class="my-3">
+        <div class="row align-items-center">
+
+
+           <!-- Фильтр по жанру -->
+    <div class="col-md-3">
+        <label for="genre" class="form-label">Фильтровать по жанру:</label>
+        <select id="genre" name="genre" class="form-select">
+            <option value="" {% if not request.GET.genre %}selected{% endif %}>Все жанры</option>
+            {% for genre in genres %}
+                <option value="{{ genre.name }}" {% if request.GET.genre == genre.name %}selected{% endif %}> {{ genre.name }} </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Фильтр по автору -->
+     <div class="col-md-3">
+      <label for="author" class="form-label">Фамилия автора:</label>
+      <select id="author" name="author" class="form-select">
+        <option value="" {% if not request.GET.author %}selected{% endif %}>Все</option>
+        {% for author in authors %}
+          <option value="{{ author }}" {% if request.GET.author == author %}selected{% endif %}>{{ author }}</option>
+        {% endfor %}
+      </select>
+    </div>
+      <div class="col-md-3">
+        <label for="sort" class="form-label">Сортировать по:</label>
+        <select id="sort" name="sort" class="form-select">
+          <option value="title" {% if request.GET.sort == 'title' %}selected{% endif %}>Названию</option>
+          <option value="price" {% if request.GET.sort == 'price' %}selected{% endif %}>Цене</option>
+          <!-- Добавьте другие варианты сортировки, если необходимо -->
+        </select>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group">
+          <input type="text" name="search" id="search" class="form-control" placeholder="Введите текст для поиска" value="{{ request.GET.search }}">
+          <button type="submit" class="btn btn-primary">Искать</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+  <div class="row">
+    {% for book in books %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 d-flex flex-column">
+          {% if book.cover %}
+            <img src="{{ book.cover.url }}" class="card-img-top" alt="{{ book.title }}">
+          {% endif %}
+          <div class="card-body flex-grow-1"  style="
+                display: flex;
+                flex-direction: column; justify-content: flex-end;">
+            <h5 class="card-title">{{ book.title }}</h5>
+            <p class="card-text">{{ book.description }}</p>
+            <p class="card-text">Автор(ы): {{ book.authors.all|join:", " }}</p>
+            <p class="card-text">Издатель: {{ book.publisher.name }}</p>
+            {% if book.price %}
+              <p class="card-text">Цена: ${{ book.price }}</p>
+            {% endif %}
+            <a href="{% url 'book_detail' pk=book.pk %}" class="btn btn-primary">Подробнее</a>
+            <a href="{% url 'buy_book' pk=book.pk %}" class="btn btn-success mt-2">Купить</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
