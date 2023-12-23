@@ -1,0 +1,11 @@
+<!-- Ваш файл create_rating.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Create Rating</h2>
+  <form method="post" action="{% url 'create_rating' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create</button>
+  </form>
+{% endblock %}
