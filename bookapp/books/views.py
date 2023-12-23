@@ -88,6 +88,7 @@ def all_books(request):
         'authors': authors,
     }
 
+    books = set(books)
     return render(request, 'all_books.html', context)
 
 
