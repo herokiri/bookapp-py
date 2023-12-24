@@ -72,16 +72,16 @@ def all_books(request):
     else:
         books = Book.objects.all()
 
-    # Применяем фильтрацию по фамилии автора
     if author_filter:
         books = books.filter(authors__last_name=author_filter)
+
 
     # Применяем сортировку и поиск
     books = books.order_by(sort_by).filter(Q(title__icontains=search_query) | Q(authors__last_name__icontains=search_query))
 
     # Получаем уникальные фамилии авторов
     authors = Author.objects.values_list('last_name', flat=True).distinct()
-
+    books = set(books)
     context = {
         'books': books,
         'genres': Genre.objects.all(),
@@ -171,7 +171,8 @@ def add_review(request, pk):
 
     if request.method == 'POST' and request.user.is_authenticated:
         text = request.POST.get('text')
-        Review.objects.create(user=request.user, book=book, text=text)
+        rating = request.POST.get('rating')
+        Review.objects.create(user=request.user, book=book, text=text, rating=rating)
 
     return redirect('book_detail', pk=pk)
 
@@ -214,3 +215,12 @@ def create_genre(request):
         form = GenreForm()
 
     return render(request, 'create_genre.html', {'form': form})
+
+
+@user_passes_test(is_moderator_or_admin)
+def delete_book(request, book_pk):
+    book = get_object_or_404(Book, pk=book_pk)
+    if request.method == 'POST':
+        book.delete()
+        return redirect('/')  # Замените 'books_list' на ваше представление со списком книг
+    return render(request, 'delete_book.html', {'book': book})

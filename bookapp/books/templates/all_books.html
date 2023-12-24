@@ -64,6 +64,7 @@
             {% if book.price %}
               <p class="card-text">Цена: ${{ book.price }}</p>
             {% endif %}
+              <p><strong>Средний рейтинг:</strong> {{ book.average_rating|default:"Нет рейтинга" }}</p>
             <a href="{% url 'book_detail' pk=book.pk %}" class="btn btn-primary">Подробнее</a>
             <a href="{% url 'buy_book' pk=book.pk %}" class="btn btn-success mt-2">Купить</a>
           </div>

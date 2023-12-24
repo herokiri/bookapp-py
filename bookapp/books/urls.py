@@ -4,7 +4,7 @@ from django.urls import path
 
 from books import views
 from books.views import BookListView, BookDetailView, buy_book_view, register, user_login, book_detail, add_review, \
-    user_profile, create_genre
+    user_profile, create_genre, delete_book
 
 urlpatterns = [
     path('create-author/', views.create_author, name='create_author'),
@@ -22,4 +22,5 @@ urlpatterns = [
     path('login/', user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('profile/', user_profile, name='user_profile'),
+    path('books/<int:book_pk>/delete/', delete_book, name='delete_book'),
 ]
